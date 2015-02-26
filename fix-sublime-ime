@@ -1,0 +1,22 @@
+#!/bin/bash
+SUBLIME_CONFIG_DIR=$HOME/.config/sublime-text-3
+sudo -v
+if [[ -z $(which subl) ]];then
+  echo "Sublime Not Installed!"
+  exit
+fi
+if [[ -d $SUBLIME_CONFIG_DIR ]];then
+  echo -n "Building libsublime-imfix.so ... "
+  gcc -shared -o libsublime-imfix.so sublime_imfix.c  `pkg-config --libs --cflags gtk+-2.0` -fPIC
+  echo "OK"
+  echo -n "Coping files ... "
+  cp libsublime-imfix.so $SUBLIME_CONFIG_DIR
+  rm libsublime-imfix.so
+  sudo cp subl /usr/bin/
+  sudo cp sublime_text.desktop /usr/share/applications
+  echo "OK"
+  echo "Fix Success!"
+else
+  echo "$SUBLIME_CONFIG_DIR Not Exist!"
+  exit
+fi
